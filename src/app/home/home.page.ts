@@ -6,6 +6,7 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -14,9 +15,13 @@ import { HTTP } from '@ionic-native/http/ngx';
 })
 export class HomePage {
 
+  public pokemons;
+  public hayPokemons = false;
+
   constructor(private iap: InAppBrowser, private correo: EmailComposer, private camara: Camera, 
       private telefono: CallNumber, private social: SocialSharing, private geo: Geolocation, 
-      private http: HTTP) {
+      private http: HTTP,
+      private nav: NavController) {
   }
 
   mostrarUrl() {
@@ -116,12 +121,15 @@ export class HomePage {
 
 
   apiRest() {
-    this.http.get('http://localhost:8000', {}, {})
+    this.http.get('https://pokeapi.co/api/v2/pokemon/ditto', {}, {})
     .then(data => {
-  
+      this.pokemons = JSON.parse(data.data);
+      this.hayPokemons = true;
       console.log(data.status);
+      //console.log(data.data.abilities[0].ability.name);
       console.log(data.data); // data received by server
       console.log(data.headers);
+      console.log(this.pokemons);
   
     })
     .catch(error => {
@@ -131,5 +139,10 @@ export class HomePage {
       console.log(error.headers);
   
     })  
+  }
+
+  ciclos() {
+    this.nav.navigateForward('ciclos');
+
   }
 }
